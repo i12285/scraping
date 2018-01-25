@@ -1,12 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
+import pdb
+import re
 
-
-def show_pref_rank(url):
+def show_mygirl_rank(url):
     """
-    都道府県別統計の詳細とランキングを表示
-    url : 「都道府県別統計とランキングで見る県民性」の
-          サイト内のランキングが掲載されたURL
+    練習
     """
 
     # html構造を取得
@@ -14,28 +13,28 @@ def show_pref_rank(url):
     content = res.content
     soup = BeautifulSoup(content, 'html.parser')
 
-    # webページから統計のタイトルを取得
-    title = soup.find(class_="kiji_divtitle").text[1:]
+    # webページからランキングのタイトルを取得
+    title = soup.find("a",href="#_2017").text
     print("~~~" + title + "~~~")
 
-    # 都道府県別のランキングを表示
-    dev = soup.find(class="ranking-tile-list cf")
-    columns = dev.find_all("tr")
-    for column in columns:
-        for elem in column.find_all("th"):
-            if elem.text == "並替":
-                break
-            print(elem.text, end="\t")
-        print("", end="\t")
-        for elem in column.find_all("td"):
-            print(elem.text, end="\t\t")
-        print("")
+    # 俺の女収集
+    dev = soup.find(class_="toc_list").find_all("a")
 
+    for cont in dev:
+        mygirl = re.search(r"\d\位　\S+",cont.text)
+        if mygirl is None:
+            continue
+        print(mygirl.group())
 
 def main():
-    url = 'http://todo-ran.com/t/kiji/11819'
-    show_pref_rank(url)
-
+    url = 'https://newsmatomedia.com/gravure-idol'
+    show_mygirl_rank(url)
 
 if __name__ == '__main__':
     main()
+
+
+
+
+
+    
